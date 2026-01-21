@@ -91,3 +91,32 @@ func isValidPrivateKey(key string) bool {
 	// TODO: Add validation for other chains
 	return false
 }
+
+// Handler is the entry point for Vercel Serverless Functions
+// This function is required by Vercel to recognize this file as a serverless function
+func Handler(w http.ResponseWriter, r *http.Request) {
+	// For Vercel deployment, we need to route requests to the appropriate handler
+	// Since this is part of a larger Gin application, we create a minimal Gin router
+	// to handle crypto-related routes
+	
+	// Create a new Gin context from the HTTP request
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
+	router.Use(gin.Recovery())
+	
+	// Note: This is a minimal implementation for Vercel compatibility
+	// In a full deployment, you would need to initialize the CryptoHandler instance
+	// with a cryptoService dependency
+	// For now, this provides a basic handler that Vercel can recognize
+	
+	// Route to a simple handler that indicates the function is available
+	router.Any("/*path", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Crypto API handler is available",
+			"path":    c.Request.URL.Path,
+		})
+	})
+	
+	// Serve the request
+	router.ServeHTTP(w, r)
+}
